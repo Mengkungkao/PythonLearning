@@ -120,48 +120,106 @@ def best_by_safety(batteries):
         f"Capacity: {best.capacity} mAh | Voltage: {best.voltage} V"
     )
 
+def edit_battery(batteries):
+    if not batteries:
+        print("\nNo battery data found.")
+        return
+
+    show_batteries(batteries)
+
+    try:
+        index = int(input("\nEnter battery number to edit: ")) - 1
+
+        if index < 0 or index >= len(batteries):
+            print("Invalid battery number.")
+            return
+
+        battery = batteries[index]
+
+        print("\nPress Enter to keep old value.")
+
+        new_name = input(f"Battery name [{battery.name}]: ").strip()
+        new_capacity = input(f"Capacity (mAh) [{battery.capacity}]: ").strip()
+        new_voltage = input(f"Nominal voltage (V) [{battery.voltage}]: ").strip()
+        new_discharge = input(f"Discharge current (A) [{battery.discharge}]: ").strip()
+        new_charge = input(f"Charge current (A) [{battery.charge}]: ").strip()
+        new_safety = input(f"Safety rating (1 to 10) [{battery.safety}]: ").strip()
+
+        if new_name:
+            battery.name = new_name
+        if new_capacity:
+            battery.capacity = float(new_capacity)
+        if new_voltage:
+            battery.voltage = float(new_voltage)
+        if new_discharge:
+            battery.discharge = float(new_discharge)
+        if new_charge:
+            battery.charge = float(new_charge)
+        if new_safety:
+            battery.safety_1_to_10 = float(new_safety)
+
+        print("Battery updated successfully.")
+
+    except ValueError:
+        print("Invalid input. Please enter correct numeric values.")
+
+
 
 
 def main():
-batteries = load_batteries()
-while True:
-    print("\nBattery Comparison System")
-    print("1. Add new battery")
-    print("2. Show all batteries")
-    print("3. Compare two batteries")
-    print("4. Show best battery by safety")
-    print("5. Edit")
-    print("6. Save")
-    print("7. Exit")
+    batteries = load_batteries()
+    while True:
+        print("\nBattery Comparison System")
+        print("1. Add new battery")
+        print("2. Show all batteries")
+        print("3. Compare two batteries")
+        print("4. Show best battery by safety")
+        print("5. Save data")
+        print("6. Reload saved battery data")
+        print("7. Edit one battery")
+        print("8. Exit")
+    
+        choice = input("Choose an option: ").strip()
+    
+        if choice == "1":
+            try:
+                battery_obj = add_battery()
+                batteries.append(battery_obj)
+                print("Battery added successfully.")
+            except ValueError:
+                print("Invalid input. Please enter correct numeric values.")
 
-    choice = input("Choose an option: ").strip()
+        elif choice == "2":
+            show_batteries(batteries)
 
-    if choice == "1":
-        try:
-            battery = add_battery()
-            batteries.append(battery)
-            print("Battery added successfully.")
-        except ValueError:
-            print("Invalid input. Please enter correct numeric values.")
+        elif choice == "3":
+            compare_batteries(batteries)
 
-    elif choice == "2":
-        show_batteries(batteries)
+        elif choice == "4":
+            best_by_safety(batteries)
 
-    elif choice == "3":
-        compare_batteries(batteries)
+        elif choice == "5":
+            save_batteries(batteries)
+            print(f"Data saved to '{FILE_NAME}'.")
 
-    elif choice == "4":
-        best_by_safety(batteries)
+        elif choice == "6":
+            confirm = input("Reload from file? Unsaved changes will be lost. (y/n): ").strip().lower()
+            if confirm == "y":
+                batteries = load_batteries()
+                print(f"Reloaded {len(batteries)} battery record(s) from {FILE_NAME}.")
+            else:
+                print("Reload cancelled.")
 
-    elif choice == "5":
-        save_batteries(batteries)
-        print(f"Data saved to '{FILE_NAME}'. Goodbye.")
-    elif choice == "6":
-        save_batteries(batteries)
-        print(f"Data saved to '{FILE_NAME}' successfully.")
-    elif choice == "7":
-        break  
-    else:
-        print("Invalid choice. Please try again.")
+        elif choice == "7":
+            edit_battery(batteries)
+
+        elif choice == "8":
+            print("Goodbye.")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+
 if __name__ == "__main__":
     main()
