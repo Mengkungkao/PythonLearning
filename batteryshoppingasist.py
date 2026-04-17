@@ -59,6 +59,69 @@ def show_batteries(batteries):
             f"{b.discharge:<15.2f}{b.charge:<12.2f}{b.energy():<12.2f}{b.safety:<10}"
         )
 
+def save_batteries(batteries, filename=FILE_NAME):
+    with open(filename, mode="w", newline="", encoding="utf-8") as file:
+        fieldnames = [
+            "name",
+            "capacity",
+            "voltage",
+            "discharge",
+            "charge",
+            "safety",
+        ]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for battery in batteries:
+            writer.writerow(asdict(battery))
+
+
+
+def compare_batteries(batteries):
+    if len(batteries) < 2:
+        print("\nNeed at least 2 batteries to compare.")
+        return
+
+    show_batteries(batteries)
+
+    try:
+        first = int(input("\nEnter first battery number to compare: ")) - 1
+        second = int(input("Enter second battery number to compare: ")) - 1
+
+        if first < 0 or second < 0 or first >= len(batteries) or second >= len(batteries):
+            print("Invalid selection.")
+            return
+
+        b1 = batteries[first]
+        b2 = batteries[second]
+
+        print("\nBattery Comparison")
+        print("-" * 60)
+        print(f"{'Property':<20}{b1.name:<18}{b2.name:<18}")
+        print("-" * 60)
+        print(f"{'Capacity (mAh)':<20}{b1.capacity:<18.1f}{b2.capacity:<18.1f}")
+        print(f"{'Nominal V':<20}{b1.voltage:<18.2f}{b2.voltage:<18.2f}")
+        print(f"{'Discharge A':<20}{b1.discharge:<18.2f}{b2.discharge:<18.2f}")
+        print(f"{'Charge A':<20}{b1.charge:<18.2f}{b2.charge:<18.2f}")
+        print(f"{'Safety':<20}{b1.safety:<18}{b2.safety:<18}")
+        print(f"{'Energy (Wh)':<20}{b1.energy():<18.2f}{b2.energy():<18.2f}")
+
+    except ValueError:
+        print("Please enter valid numbers.")
+def best_by_safety(batteries):
+    if not batteries:
+        print("\nNo battery data found.")
+        return
+
+    best = max(batteries, key=lambda b: b.safety)
+    print("\nBest Battery by Safety:")
+    print(
+        f"{best.name} | Safety: {best.safety} | "
+        f"Capacity: {best.capacity} mAh | Voltage: {best.voltage} V"
+    )
+
+
+
 def main():
 batteries = load_batteries()
 while True:
