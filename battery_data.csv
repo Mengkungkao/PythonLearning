@@ -1,0 +1,8 @@
+name,capacity,voltage,discharge,charge,safety
+AAA,5,4,3,2,7
+BBB,5,6,7,5,6
+CCC,6,5,4,4,3
+DDD,5,5,5,5,5
+EEE,7,7,7,7,7
+FFF,5,4,3,6,4
+GGG,4,4,4,4,6
