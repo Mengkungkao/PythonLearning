@@ -33,6 +33,32 @@ def load_batteries(filename = FILE_NAME):
                 print(f"Skipped invalid row: {row}")
         return batteries
 
+def add_battery():
+    print("\nEnter batteries information")
+    name = input("Model name: ")
+    capacity = float(input("Capacity[Ah] "))
+    voltage = float(input("Norminal Voltage[V]"))
+    discharge= float(input("Maximum Discharge Current{C}"))
+    charge =float(input("Maximum Charge Current[C]"))
+    safety = float(input("Safety Factor Rating 1 to 10 "))
+    return Battery(name,capacity,voltage,discharge,charge,safety)
+def show_batteries(batteries):
+    if not batteries:
+        print("\nNot yet input any battery")
+        return
+    print("\nBatteries models:")
+    print("--------------------------------------------------------------------------------------------------")
+    print(
+        f"{'No.':<5}{'Name':<20}{'Capacity(mAh)':<15}{'Voltage(V)':<12}"
+        f"{'Discharge(A)':<15}{'Charge(A)':<12}{'Energy(Wh)':<12}{'Safety':<10}"
+    )
+    print("--------------------------------------------------------------------------------------------------")
+    for i,b in enumerate(batteries,start=1):
+        print(
+            f"{i:<5}{b.name:<20}{b.capacity:<15.1f}{b.voltage:<12.2f}"
+            f"{b.discharge:<15.2f}{b.charge:<12.2f}{b.energy():<12.2f}{b.safety:<10}"
+        )
+
 def main():
 batteries = load_batteries()
 while True:
